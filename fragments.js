@@ -1,26 +1,13 @@
-<head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
-  
-<script>
+const _ = require('lodash')
 
-var words = [];
+var fs = require('fs');
+var words = fs.readFileSync('all6-sonnets.txt').toString().split("\n");
+
+
+
 
 ////// get the list of words from sonnets (updates global variable 'words')
-
-
-// Check for the various File API support.
-if (window.File && window.FileReader && window.FileList && window.Blob) {
-   //alert( "Great success! All the File APIs are supported.");
-} else {
-  alert('The File APIs are not fully supported in this browser.');
-}
-
 
 var reader = new FileReader();
 
