@@ -90,12 +90,11 @@
             var fragment = null, spot
             while (!fragment) {
                 spot = _.random(0, state.current_words.length - 1)
-                fragment = get_random_fragment( state.current_words[spot] )
-                console.log(fragment)
+                fragment = get_random_fragment( state.current_words[spot].word )
             }
-    
-            console.log(fragment)
 
+            fragment = fragment.map(word => { return { word, status: "new" }})
+    
             switch(options.mode) {
                 case "replace" : 
                 replace_at(fragment, spot)
@@ -113,9 +112,10 @@
         }
 
         function render() {
+            console.log(state.current_words)
+
             var words = state.current_words.map( (word, i) => 
-                (!!state.fragment_range && i >= state.fragment_range[0] && i <= state.fragment_range[1]) ?
-                ('<span class="hilite">' + word + '</span>') : word)
+                '<span class="' + word.status + '">' + word.word + '</span>')
             $("#current_text").html(_.chunk(words, 10).map(line => line.join(" ") + "<br>")) 
         }
 
