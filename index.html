@@ -42,7 +42,8 @@
 
         var options = {
             mode: "replace",
-            fragment_length: 5,
+            fragment_min_length: 5,
+            fragment_max_length: 7,
             main_sonnet: 1
         } 
 
@@ -74,7 +75,7 @@
         function get_random_fragment (word) {
             var occurences = get_outside_occurences (word)
             if (occurences.length == 0) return null
-            return get_fragment( _.sample( occurences ), options.fragment_length)
+            return get_fragment( _.sample( occurences ), _.random(options.fragment_min_length, options.fragment_max_length))
         }
 
         function replace_at(fragment, index) {
