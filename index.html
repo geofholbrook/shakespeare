@@ -74,8 +74,7 @@
                 })
             })
 
-            console.log(result)
-
+            
             return result
         }
 
@@ -106,6 +105,9 @@
         }
 
         function iterate() {
+            state.current_words.forEach(word => { if (word.status == "new") word.status = "accepted" })
+            state.current_words = state.current_words.filter(word => word.status != "removed")
+
             var fragment = null, spot
             while (!fragment) {
                 spot = _.random(0, state.current_words.length - 1)
@@ -131,7 +133,6 @@
         }
 
         function render() {
-            console.log(state.current_words)
 
             var words = state.current_words.map( (word, i) => 
                 '<span class="' + word.status + '">' + word.word + '</span>')
