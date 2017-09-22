@@ -81,8 +81,8 @@
         }
 
         function insert_at (fragment, index) {
-            // does not duplicate common word
-            state.current_words.splice(index, 1, ...fragment)
+            // duplicates common word
+            state.current_words.splice(index, 0, ...fragment)
         }
 
         function iterate() {
