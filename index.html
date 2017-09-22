@@ -47,7 +47,7 @@
             main_sonnet: 1
         } 
 
-        state.current_words = sonnets[options.main_sonnet]
+        state.current_words = sonnets[options.main_sonnet].map(word => { return { word, status: "original"} } )
 
         function get_outside_occurences (word) {
             // searches all _other_ sonnets for a word
