@@ -25,8 +25,9 @@
     <button id="undo">undo</button>
     <button id="redo">redo</button>
     <select id="replace_insert">
-            <option value="replace">REPLACE</option>
-            <option value="insert">INSERT</option>
+            <option value="replace">replace</option>
+            <option value="insert-retain">insert (retain)</option>
+            <option value="insert">insert</option>
           </select>
 
     <div id="current_text">hey</div>
@@ -80,9 +81,8 @@
             state.current_words.splice(index, fragment.length, ...fragment)
         }
 
-        function insert_at (fragment, index) {
-            // duplicates common word
-            state.current_words.splice(index, 0, ...fragment)
+        function insert_at (fragment, index, retain) {
+            state.current_words.splice(index, (retain) ? 0 : 1, ...fragment)
         }
 
         function iterate() {
@@ -100,8 +100,12 @@
                 replace_at(fragment, spot)
                 break
 
+                case "insert-retain" :
+                insert_at(fragment, spot, true)
+                break
+
                 case "insert" :
-                insert_at(fragment, spot)
+                insert_at(fragment, spot, false)
             }
 
             state.fragment_range = [spot, spot + fragment.length - 1]   
