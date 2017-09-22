@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
+
+    <script src="data.js"></script>
+   
+  <style type="text/css">
+
+    .hilite {
+        color: red
+    }
+  </style>
+  
+
+</head>
+  
+  <body>
+  
+    <button id="iterate">iterate</button>
+    <button id="undo">undo</button>
+    <button id="redo">redo</button>
+    <div id="current_text">hey</div>
+
+    <script>
+
+        var undo_states = []
+        var redo_states = []
+
+        var state = { current_words: [],
+                      fragment_range: null }
+
+        var options = {
+            mode: "replace",
+            fragment_length: 5,
+            main_sonnet: 0
+        } 
+
+        state.current_words = sonnets[options.main_sonnet]
+
+        function get_outside_occurences (word) {
+            // searches all _other_ sonnets for a word
+            // format for results is an array [ <sonnet index>, <word_index> ]
+            
+            var others = _.without(sonnets, sonnets[options.main_sonnet])
+            result = []
+            others.forEach( (s,si) => {
+                s.forEach( (w,wi) => {
+                    if (word == w) result.push([sonnets.indexOf(s), wi])
+                })
+            })
+
+            console.log(result)
+
+            return result
+        }
+
+        function get_fragment(location, length) {
+            var sonn = sonnets[location[0]]
+            
+            return sonn.slice(location[1], location[1] + length)    
+        }
+
+        function get_random_fragment (word) {
+            var occurences = get_outside_occurences (word)
+            if (occurences.length == 0) return null
+            return get_fragment( _.sample( occurences ), options.fragment_length)
+        }
+
+        function replace_at(fragment, index) {
+            state.current_words.splice(index, fragment.length, ...fragment)
+        }
+
+        function insert_at (fragment, index) {
+            // does not duplicate common word
+            state.current_words.splice(index, 1, ...fragment)
+        }
+
+        function iterate() {
+            var fragment = null, spot
+            while (!fragment) {
+                spot = _.random(0, state.current_words.length - 1)
+                fragment = get_random_fragment( state.current_words[spot] )
+                console.log(fragment)
+            }
+    
+            console.log(fragment)
+
+            switch(options.mode) {
+                case "replace" : 
+                replace_at(fragment, spot)
+                break
+
+                case "insert" :
+                insert_at(fragment, spot)
+            }
+
+            state.fragment_range = [spot, spot + fragment.length - 1]   
+        }
+
+        function render() {
+            var words = state.current_words.map( (word, i) => 
+                (!!state.fragment_range && i >= state.fragment_range[0] && i <= state.fragment_range[1]) ?
+                ('<span class="hilite">' + word + '</span>') : word)
+            $("#current_text").html(_.chunk(words, 10).map(line => line.join(" ") + "<br>")) 
+        }
+
+        function forward() {
+            undo_states.push(_.cloneDeep(state))
+            iterate()
+            render(state)
+        }
+
+        function undo() {
+            if (undo_states.length > 0) {
+                redo_states.push(state)
+                state = undo_states.pop()
+                render(state)
+            }
+        }
+
+        function redo() {
+            if (redo_states.length > 0) {
+                undo_states.push(_.cloneDeep(state))
+                state = redo_states.pop()
+                render(state)
+            }
+        }
+
+        $("#iterate").click(function() {
+            forward()
+        })
+
+        $("#undo").click(function() {
+            undo()
+        })
+
+        $("#redo").click(function() {
+            redo()
+        })
+
+        render()
+
+    </script>
+
+  </body>
+</html>

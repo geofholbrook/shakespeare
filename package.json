@@ -4,6 +4,7 @@
   "description": "",
   "main": "fragments.js",
   "dependencies": {
+    "browserify-fs": "^1.0.0",
     "express": "^4.15.4",
     "lodash": "^4.17.4"
   },
