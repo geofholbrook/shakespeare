@@ -9,13 +9,26 @@
 
     <script src="data.js"></script>
    
-  <style type="text/css">
+    <style type="text/css">
 
-    .hilite {
-        color: red
-    }
-  </style>
-  
+        .original {
+            color: black
+        }
+
+        .new {
+            color: red
+        }
+
+        .removed {
+            color: grey;
+            text-decoration: line-through;
+        }
+
+        .accepted {
+            color: orange
+        }
+        
+    </style>
 
 </head>
   
@@ -78,12 +91,18 @@
             return get_fragment( _.sample( occurences ), _.random(options.fragment_min_length, options.fragment_max_length))
         }
 
+        function replace_n_at(fragment, index, n) {
+            var removed = state.current_words.splice(index, n, ...fragment)
+            removed = removed.slice().map( word => { return { word: word.word, status: "removed" }})
+            state.current_words.splice(index+fragment.length, 0, ...removed)
+        }
+
         function replace_at(fragment, index) {
-            state.current_words.splice(index, fragment.length, ...fragment)
+            replace_n_at(fragment, index, fragment.length)
         }
 
         function insert_at (fragment, index, retain) {
-            state.current_words.splice(index, (retain) ? 0 : 1, ...fragment)
+            replace_n_at(fragment, index, (retain) ? 0 : 1)
         }
 
         function iterate() {
