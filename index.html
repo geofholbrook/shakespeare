@@ -42,7 +42,7 @@
         var options = {
             mode: "replace",
             fragment_length: 5,
-            main_sonnet: 0
+            main_sonnet: 1
         } 
 
         state.current_words = sonnets[options.main_sonnet]
@@ -146,6 +146,11 @@
 
         $("#redo").click(function() {
             redo()
+        })
+
+        $("#replace_insert").change( (e) => {
+
+
         })
 
         render()
