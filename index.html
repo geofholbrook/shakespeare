@@ -93,7 +93,7 @@
         function replace_n_at(fragment, index, n) {
             var removed = state.current_words.splice(index, n, ...fragment)
             removed = removed.slice().map( word => { return { word: word.word, status: "removed" }})
-            state.current_words.splice(index+fragment.length, 0, ...removed)
+            state.current_words.splice(index, 0, ...removed)
         }
 
         function replace_at(fragment, index) {
