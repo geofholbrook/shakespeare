@@ -187,7 +187,7 @@
                 
                 found = found.map(word => { return { word, status: "new" } })
 
-                state.current_words.splice(-1, 0, ...found)
+                replace_n_at(found, state.current_words.length - 1, (options.mode != "insert-retain"))
             })
         }
 
