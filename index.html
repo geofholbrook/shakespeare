@@ -48,6 +48,7 @@
   <body>
   
     <button id="modify">modify</button>
+    <button id="append">append</button>
     <button id="undo">undo</button>
     <button id="redo">redo</button>
     <select id="replace_insert">
@@ -187,8 +188,15 @@
 
         function action_wrapper(fn) {
             undo_states.push(_.cloneDeep(state))
+            redo_states = []
             fn.call(null)
             render(state)
+        }   
+
+        function append() {
+            action_wrapper(() =>
+                alert("hi steph! that button doesn't do anything yet!")
+            )
         }
 
         function clear() {
@@ -215,6 +223,9 @@
             modify()
             render(state)
         })
+
+        $("#append").click(append)
+
 
         $("#finish").click(function() {
             undo_states.push(_.cloneDeep(state))
