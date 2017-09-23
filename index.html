@@ -55,10 +55,15 @@
         <option value="insert-retain">insert (retain)</option>
         <option value="insert">insert</option>
     </select> 
-
+    
     <button id="finish">finish</button>
-
-    <div id="current_text">hey</div>
+    
+    <span>initialize with:</span>
+    <button id="nothing">nothing</button>
+    <button id="sonnet-23">sonnet #23</button>
+    
+    
+    <div id="current_text"></div>
 
     <script>
 
@@ -74,8 +79,6 @@
             fragment_max_length: 7,
             main_sonnet: 1
         } 
-
-        state.current_words = sonnets[options.main_sonnet].map(word => { return { word, status: "original"} } )
 
         function get_outside_occurences (word) {
             // searches all _other_ sonnets for a word
@@ -117,7 +120,7 @@
 
         function insert_at (fragment, index, retain) {
             replace_n_at(fragment, index, (retain) ? 0 : 1)
-        }
+        }   
 
         function modify() {
             state.current_words.forEach(word => { if (word.status == "new") word.status = "accepted" })
@@ -146,7 +149,6 @@
 
             state.fragment_range = [spot, spot + fragment.length - 1]   
         }
-
 
 
         function finish() {
@@ -181,6 +183,24 @@
             }
         }
 
+        function action_wrapper(fn) {
+            undo_states.push(_.cloneDeep(state))
+            fn.call(null)
+            render(state)
+        }
+
+        function clear() {
+            action_wrapper(() => {
+                state.current_words = []
+            })
+        }
+
+        function sonnet23() {
+            action_wrapper(() => {
+                state.current_words = sonnets[options.main_sonnet].map(word => { return { word, status: "original"} } )
+            })
+        }
+
         $("#modify").click(function() {
             undo_states.push(_.cloneDeep(state))
             modify()
@@ -193,18 +213,17 @@
             render(state)
         })
 
-        $("#undo").click(function() {
-            undo()
-        })
-
-        $("#redo").click(function() {
-            redo()
-        })
+        $("#undo").click(undo)
+        $("#redo").click(redo)
 
         $("#replace_insert").change( (e) => {
             options.mode = $(e.target).val()
         })
 
+        $("#nothing").click(clear)
+        $("#sonnet-23").click(sonnet23)
+
+        sonnet23()
         render()
 
     </script>
