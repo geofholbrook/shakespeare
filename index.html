@@ -59,8 +59,8 @@
     <button id="finish">finish</button>
     
     <span>initialize with:</span>
-    <button id="nothing">nothing</button>
-    <button id="sonnet-23">sonnet #23</button>
+    <button id="fragment">fragment</button>
+    <button id="sonnet">sonnet</button>
     
     
     <div id="current_text"></div>
@@ -71,7 +71,9 @@
         var redo_states = []
 
         var state = { current_words: [],
-                      fragment_range: null }
+                      fragment_range: null,
+                      append_index: 0,
+                    }
 
         var options = {
             mode: "replace",
@@ -195,7 +197,14 @@
             })
         }
 
-        function sonnet23() {
+        function init_with_fragment() {
+            action_wrapper(() => {
+                var opening = sonnets[options.main_sonnet].slice(0, _.random(options.fragment_min_length, options.fragment_max_length))
+                state.current_words = opening.map(word => { return { word, status: "original" } })
+            })
+        }
+
+        function init_with_sonnet() {
             action_wrapper(() => {
                 state.current_words = sonnets[options.main_sonnet].map(word => { return { word, status: "original"} } )
             })
@@ -220,10 +229,11 @@
             options.mode = $(e.target).val()
         })
 
-        $("#nothing").click(clear)
-        $("#sonnet-23").click(sonnet23)
+        $("#fragment").click(init_with_fragment)
+        $("#sonnet").click(init_with_sonnet)
 
-        sonnet23()
+        init_with_sonnet()
+        undo_states = []
         render()
 
     </script>
