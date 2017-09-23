@@ -47,14 +47,16 @@
   
   <body>
   
-    <button id="iterate">iterate</button>
+    <button id="modify">modify</button>
     <button id="undo">undo</button>
     <button id="redo">redo</button>
     <select id="replace_insert">
-            <option value="replace">replace</option>
-            <option value="insert-retain">insert (retain)</option>
-            <option value="insert">insert</option>
-          </select>
+        <option value="replace">replace</option>
+        <option value="insert-retain">insert (retain)</option>
+        <option value="insert">insert</option>
+    </select> 
+
+    <button id="finish">finish</button>
 
     <div id="current_text">hey</div>
 
@@ -117,7 +119,7 @@
             replace_n_at(fragment, index, (retain) ? 0 : 1)
         }
 
-        function iterate() {
+        function modify() {
             state.current_words.forEach(word => { if (word.status == "new") word.status = "accepted" })
             state.current_words = state.current_words.filter(word => word.status != "removed")
 
@@ -145,17 +147,22 @@
             state.fragment_range = [spot, spot + fragment.length - 1]   
         }
 
+
+
+        function finish() {
+            state.current_words = 
+            state.current_words
+            .filter(word => word.status != "removed")
+
+            state.current_words
+            .forEach( word => { if (word.status == "new") word.status = "accepted" })
+        }
+
         function render() {
 
             var words = state.current_words.map( (word, i) => 
                 '<span class="' + word.status + '">' + word.word + '</span>')
             $("#current_text").html(_.chunk(words, 10).map(line => line.join(" ") + "<br>")) 
-        }
-
-        function forward() {
-            undo_states.push(_.cloneDeep(state))
-            iterate()
-            render(state)
         }
 
         function undo() {
@@ -174,8 +181,16 @@
             }
         }
 
-        $("#iterate").click(function() {
-            forward()
+        $("#modify").click(function() {
+            undo_states.push(_.cloneDeep(state))
+            modify()
+            render(state)
+        })
+
+        $("#finish").click(function() {
+            undo_states.push(_.cloneDeep(state))
+            finish()
+            render(state)
         })
 
         $("#undo").click(function() {
