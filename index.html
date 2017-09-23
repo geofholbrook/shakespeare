@@ -60,7 +60,7 @@
     <button id="finish">finish</button>
     
     <span>initialize with:</span>
-    <button id="fragment">fragment</button>
+    <button id="nothing">nothing</button>
     <button id="sonnet">sonnet</button>
     
     
@@ -78,8 +78,7 @@
 
         var options = {
             mode: "replace",
-            fragment_min_length: 5,
-            fragment_max_length: 7,
+            fragment_length_range: [5,7],
             main_sonnet: 1
         } 
 
@@ -108,7 +107,7 @@
         function get_random_fragment (word) {
             var occurences = get_outside_occurences (word)
             if (occurences.length == 0) return null
-            return get_fragment( _.sample( occurences ), _.random(options.fragment_min_length, options.fragment_max_length))
+            return get_fragment( _.sample( occurences ), _.random(...options.fragment_length_range))
         }
 
         function replace_n_at(fragment, index, n) {
@@ -125,10 +124,14 @@
             replace_n_at(fragment, index, (retain) ? 0 : 1)
         }   
 
-        function modify() {
+        function accept() {
             state.current_words.forEach(word => { if (word.status == "new") word.status = "accepted" })
             state.current_words = state.current_words.filter(word => word.status != "removed")
+        }
 
+        function modify() {
+            accept()
+            
             var fragment = null, spot
             while (!fragment) {
                 spot = _.random(0, state.current_words.length - 1)
@@ -151,6 +154,41 @@
             }
 
             state.fragment_range = [spot, spot + fragment.length - 1]   
+        }
+
+        function append() {
+            action_wrapper(() => {
+
+                accept()
+
+                var found = null
+                var count = 0
+                var num_matches = 0
+                var nth_match = _.random(1,4)
+                while (!found) {
+                    var word = sonnets[options.main_sonnet][state.append_index]
+                    state.current_words.push({ word, status: "original"})
+
+                    count++
+                    state.append_index++
+                    if (state.append_index >= sonnets[options.main_sonnet].length) state.append_index = 0
+                    
+                    if (count >= options.fragment_length_range[0]) {
+                        occs = get_outside_occurences(word)
+                        if (occs.length > 0) {
+                            num_matches++
+                            if (num_matches == nth_match) {
+                                found = get_fragment(_.sample(occs), _.random(...options.fragment_length_range))
+                                console.log(found)
+                            }
+                        }
+                    }
+                }
+                
+                found = found.map(word => { return { word, status: "new" } })
+
+                state.current_words.splice(-1, 0, ...found)
+            })
         }
 
 
@@ -193,21 +231,18 @@
             render(state)
         }   
 
-        function append() {
-            action_wrapper(() =>
-                alert("hi steph! that button doesn't do anything yet!")
-            )
-        }
+        
 
         function clear() {
             action_wrapper(() => {
                 state.current_words = []
+                state.append_index = 0
             })
         }
 
         function init_with_fragment() {
             action_wrapper(() => {
-                var opening = sonnets[options.main_sonnet].slice(0, _.random(options.fragment_min_length, options.fragment_max_length))
+                var opening = sonnets[options.main_sonnet].slice(0, _.random(...options.fragment_length_range))
                 state.current_words = opening.map(word => { return { word, status: "original" } })
             })
         }
@@ -240,7 +275,7 @@
             options.mode = $(e.target).val()
         })
 
-        $("#fragment").click(init_with_fragment)
+        $("#nothing").click(clear)
         $("#sonnet").click(init_with_sonnet)
 
         init_with_sonnet()
