@@ -165,6 +165,7 @@
                 var count = 0
                 var num_matches = 0
                 var nth_match = _.random(1,4)
+
                 while (!found) {
                     var word = sonnets[options.main_sonnet][state.append_index]
                     state.current_words.push({ word, status: "original"})
@@ -188,6 +189,7 @@
                 found = found.map(word => { return { word, status: "new" } })
 
                 replace_n_at(found, state.current_words.length - 1, (options.mode != "insert-retain"))
+                if (options.mode == "replace") state.append_index += (found.length - 1)
             })
         }
 
