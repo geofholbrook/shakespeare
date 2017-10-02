@@ -24,6 +24,10 @@
             border: solid
         }
 
+        button {
+            margin: 5px;
+        }
+
         .original {
             color: black
         }
@@ -66,7 +70,6 @@
     <br>
     <span>jump to</span>
     <button id="begin23">beginning of #23</button>
-    <button id="random23">random spot within #23</button>
     <button id="random">random spot within entire text bank</button>
     
     
@@ -286,7 +289,7 @@
         $("#nothing").click(clear)
         $("#sonnet").click(init_with_sonnet)
 
-        init_with_sonnet()
+        clear()
         undo_states = []
         render()
 
