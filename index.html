@@ -18,10 +18,18 @@
             padding: 20px
         }
 
-        div { 
-            margin: 20px;
+        #current-text { 
+            margin-top: 10px;
             padding: 20px;
             border: solid
+        }
+
+        #spot {
+            color: green
+        }
+
+        #excerpt {
+            color: grey
         }
 
         button {
@@ -68,12 +76,15 @@
     <button id="sonnet">sonnet #23</button>
 
     <br>
-    <span>jump to</span>
     <button id="begin23">beginning of #23</button>
     <button id="random">random spot within entire text bank</button>
-    
-    
-    <div id="current_text"></div>
+
+    <div id="current-text"></div>
+
+    <div id="spot"></div>
+
+
+
 
     <script>
 
@@ -82,20 +93,24 @@
 
         var state = { current_words: [],
                       fragment_range: null,
-                      append_index: 0,
+                      current_spot: 0,
+                      current_sonnet: 1
                     }
 
         var options = {
             mode: "replace",
             fragment_length_range: [5,7],
-            main_sonnet: 1
         } 
+
+        function current_word() {
+            return sonnets[state.current_sonnet][state.current_spot]
+        }
 
         function get_outside_occurences (word) {
             // searches all _other_ sonnets for a word
             // format for results is an array [ <sonnet index>, <word_index> ]
             
-            var others = _.without(sonnets, sonnets[options.main_sonnet])
+            var others = _.without(sonnets, sonnets[state.current_sonnet])
             result = []
             others.forEach( (s,si) => {
                 s.forEach( (w,wi) => {
@@ -176,12 +191,18 @@
                 var nth_match = _.random(1,4)
 
                 while (!found) {
-                    var word = sonnets[options.main_sonnet][state.append_index]
+                    var word = current_word()
                     state.current_words.push({ word, status: "original"})
 
                     count++
-                    state.append_index++
-                    if (state.append_index >= sonnets[options.main_sonnet].length) state.append_index = 0
+                    state.current_spot++
+                    if (state.current_spot >= sonnets[state.current_sonnet].length) {
+                        state.current_sonnet++
+                        if (state.current_sonnet >= sonnets.length) {
+                            state.current_sonnet = 0
+                        }
+                        state.current_spot = 0
+                    }
                     
                     if (count >= options.fragment_length_range[0]) {
                         occs = get_outside_occurences(word)
@@ -198,10 +219,9 @@
                 found = found.map(word => { return { word, status: "new" } })
 
                 replace_n_at(found, state.current_words.length - 1, (options.mode != "insert-retain"))
-                if (options.mode == "replace") state.append_index += (found.length - 1)
+                if (options.mode == "replace") state.current_spot += (found.length - 1)
             })
         }
-
 
         function finish() {
             state.current_words = 
@@ -216,7 +236,20 @@
 
             var words = state.current_words.map( (word, i) => 
                 '<span class="' + word.status + '">' + word.word + '</span>')
-            $("#current_text").html(_.chunk(words, 10).map(line => line.join(" ") + "<br>")) 
+            $("#current-text").html(_.chunk(words, 10).map(line => line.join(" ") + "<br>")) 
+
+            var excerpt = [], count = 0, tmp_spot = state.current_spot, tmp_sonnet = state.current_sonnet
+            while (count < 4) {
+                excerpt.push (sonnets[tmp_sonnet][tmp_spot])
+                tmp_spot++
+                if (tmp_spot > sonnets[tmp_sonnet].length) {
+                    tmp_sonnet = (tmp_sonnet+1) % sonnets.length
+                    tmp_spot = 0
+                }
+                count ++
+            }
+            $("#spot").html("current spot: " + state.current_sonnet + "/" + state.current_spot + ' <span id="excerpt">(' +
+                                excerpt.join(" ") + " ...)</span>")
         }
 
         function undo() {
@@ -247,22 +280,32 @@
         function clear() {
             action_wrapper(() => {
                 state.current_words = []
-                state.append_index = 0
+                // state.current_spot = 0
             })
         }
 
-        function init_with_fragment() {
+        function init_with_sonnet( index ) {
             action_wrapper(() => {
-                var opening = sonnets[options.main_sonnet].slice(0, _.random(...options.fragment_length_range))
-                state.current_words = opening.map(word => { return { word, status: "original" } })
+                state.current_words = sonnets[index].map(word => { return { word, status: "original"} } )
+                state.current_sonnet = (index + 1) % sonnets.length
+                state.current_spot = 0
             })
         }
 
-        function init_with_sonnet() {
+        function begin23() {
             action_wrapper(() => {
-                state.current_words = sonnets[options.main_sonnet].map(word => { return { word, status: "original"} } )
+                state.current_sonnet = 1
+                state.current_spot = 0
             })
         }
+
+        function random_spot() {
+            action_wrapper(() => {
+                state.current_sonnet = _.random(0, sonnets.length - 1)
+                state.current_spot = _.random (0, sonnets[state.current_sonnet].length - 1)
+            })
+        }
+
 
         $("#modify").click(function() {
             undo_states.push(_.cloneDeep(state))
@@ -287,9 +330,14 @@
         })
 
         $("#nothing").click(clear)
-        $("#sonnet").click(init_with_sonnet)
+        $("#sonnet").click(() => init_with_sonnet(1) )
+
+        $("#begin23").click(begin23)
+        $("#random").click(random_spot)
 
         clear()
+        begin23()
+
         undo_states = []
         render()
 
