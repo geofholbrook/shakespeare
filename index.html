@@ -63,39 +63,61 @@
             color: blue
         }
         
+        .instructions {
+            font-size: 12px
+        }
+        
     </style>
 
 </head>
   
   <body>
   
-    <p> instructions will go here </p>
+    <h1>Shakespeare Recombined</h1> 
+
+    <p class = "instructions"> This tool works with fragments of text 5-7 words long, drawn from six Shakespeare sonnets 
+        (#8, 23, 59, 68, 71, 128). The six sonnets have been grouped in order into a text bank. </p>
+
+        <p class = "instructions">To build a text, you can either start from a random spot in the text bank or from the beginning of Sonnet 23.  Reset to begin again.</p>
+
+        <p class = "instructions">Click on append to add fragments one after the other.  Click on modify to alter text 
+            that is already displayed.  Sonnet 23 (entire) works well with modify.</p>
+        
+        <p class = "instructions">In the small menu box, there is the option to "insert" or "replace".  When you insert a fragment, the program will 
+            pick up from where it left off once the insertion is made. When you replace a fragment, 
+            the program will skip over the corresponding number of words in text bank before resuming.</p>
+        
+        <p class = "instructions">"Undo" and "redo" allow you to accept or reject the program's suggestions, in order to shape the text to your liking.  
+            Text in red shows the most recent appended fragment.  Text in blue shows text that has been modified.  Click on "finalize" to turn the entire text to black.</p>
+        
 
     <div id="panel">
 
         <span>initialize with:</span>
-        <button id="nothing">nothing</button>
-        <button id="sonnet">sonnet #23</button>
-        
-        <span>set current spot to</span>
+        <button id="random">random spot</button>
         <button id="begin23">beginning of #23</button>
-        <button id="random">random spot within entire text bank</button>
-        
+        <button id="sonnet">sonnet #23 (entire)</button>
+        <button id="nothing">reset</button>
         
         <br>
         
-        <button id="modify">modify</button>
+        <span>actions:</span>
         <button id="append">append</button>
         <select id="replace_insert">
             <option value="replace">replace</option>
             <option value="insert-retain">insert (retain)</option>
             <option value="insert">insert</option>
         </select> 
+        <button id="modify">modify</button>
         
         <br>
+
+        <span>tools:</span>
         <button id="undo">undo</button>
         <button id="redo">redo</button>
-        <button id="finish">finish</button>
+        <button id="finish">finalize</button>
+        
+        <br>
         
     </div>
         
