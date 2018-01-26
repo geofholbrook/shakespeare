@@ -18,10 +18,20 @@
             padding: 20px
         }
 
+        #panel {
+            background-color: beige;
+            border: solid;
+            border-color: green;
+            padding: 10px;
+        }
+
         #current-text { 
             margin-top: 10px;
+            background-color: lightblue;
             padding: 20px;
-            border: solid
+            border-color: green;
+            border: solid;
+            font-size: 18px;
         }
 
         #spot {
@@ -59,26 +69,38 @@
   
   <body>
   
-    <button id="modify">modify</button>
-    <button id="append">append</button>
-    <button id="undo">undo</button>
-    <button id="redo">redo</button>
-    <select id="replace_insert">
-        <option value="replace">replace</option>
-        <option value="insert-retain">insert (retain)</option>
-        <option value="insert">insert</option>
-    </select> 
-    
-    <button id="finish">finish</button>
-    
-    <span>initialize with:</span>
-    <button id="nothing">nothing</button>
-    <button id="sonnet">sonnet #23</button>
+    <p> instructions will go here </p>
 
-    <br>
-    <button id="begin23">beginning of #23</button>
-    <button id="random">random spot within entire text bank</button>
+    <div id="panel">
 
+        <span>initialize with:</span>
+        <button id="nothing">nothing</button>
+        <button id="sonnet">sonnet #23</button>
+        
+        <span>set current spot to</span>
+        <button id="begin23">beginning of #23</button>
+        <button id="random">random spot within entire text bank</button>
+        
+        
+        <br>
+        
+        <button id="modify">modify</button>
+        <button id="append">append</button>
+        <select id="replace_insert">
+            <option value="replace">replace</option>
+            <option value="insert-retain">insert (retain)</option>
+            <option value="insert">insert</option>
+        </select> 
+        
+        <br>
+        <button id="undo">undo</button>
+        <button id="redo">redo</button>
+        <button id="finish">finish</button>
+        
+    </div>
+        
+        <br>
+    
     <div id="current-text"></div>
 
     <div id="spot"></div>
