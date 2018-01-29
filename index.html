@@ -35,7 +35,8 @@
         }
 
         #spot {
-            color: green
+            color: green;
+            margin-bottom: 30px
         }
 
         #excerpt {
@@ -76,7 +77,7 @@
     <h2>Shakespeare Recombined</h2> 
 
     <p class = "instructions"> This tool works with fragments of text 5-7 words long, drawn from six Shakespeare sonnets 
-        (#8, 23, 59, 68, 71, 128). The six sonnets have been grouped in order into a text bank. </p>
+        (#8, 23, 59, 68, 71, 128). The six sonnets have been grouped sequentially into a text bank. </p>
 
     <p class = "instructions">To build a text, you can either start from a random spot in the text bank or from the beginning of Sonnet 23.  Reset to begin again.</p>
 
@@ -84,10 +85,10 @@
         that is already displayed.  Sonnet 23 (entire) works well with modify.</p>
     
     <p class = "instructions">In the small menu box, there is the option to "insert" or "replace".  When you insert a fragment, the program will 
-        pick up from where it left off once the insertion is made. When you replace a fragment, 
-        the program will skip over the corresponding number of words in text bank before resuming.</p>
+        pick up from where it left off in the text once the insertion is made. When you replace a fragment, 
+        the program will skip over the corresponding number of words in text before resuming.</p>
     
-    <p class = "instructions">"Undo" and "redo" allow you to accept or reject the program's suggestions, in order to shape the text to your liking.  
+    <p class = "instructions">"Undo" and "redo" allow you to accept or reject the program's suggestions, in order to retain control over the text you are building.  
         Text in red shows the most recent appended fragment.  Text in blue shows text that has been modified.  Click on "finalize" to turn the entire text to black.</p>
     
 
@@ -103,12 +104,11 @@
         
         <span>actions:</span>
         <button id="append">append</button>
-        <select id="replace_insert">
-            <option value="replace">replace</option>
-            <option value="insert-retain">insert (retain)</option>
-            <option value="insert">insert</option>
-        </select> 
         <button id="modify">modify</button>
+        <select id="replace_insert">
+            <option value="insert-retain">insert</option>
+            <option value="replace">replace</option>
+        </select> 
         
         <br>
 
@@ -126,6 +126,21 @@
     <div id="current-text"></div>
 
     <div id="spot"></div>
+
+    <div id="credits">
+        <p>
+            Concept: Stephanie Moore<br>
+            Programming: Geof Holbrook
+        </p>
+    </div>
+
+    <div id="explanation">
+        <p>
+            This tool was designed for the purposes of a piece Stephanie Moore was composing, 
+            receive joy former all, commissioned by Voces Boreales and Bradyworks with the 
+            support of the Conseil des arts et des lettres du Québec, in 2017.
+        </p>
+    </div>
 
 
 
